@@ -5,7 +5,8 @@ Spring boot rest test app
 This is restful shape construction online application. It is based on the Domain Driven Design architecture using the Spring framework and jQuery for page event management. All inputs are processed and all output values are calculated in the server via javascript restful API calls.
 
 # Usage
-Click the 'Change Size' button to reveal the dimensions table. Upon modifying the dimensions and clicking the "redraw" button, the shape is redrawn with the newly entered dimension values.
+Click the 'Change Size' button to reveal the dimensions table. Changes to the shapes dimensons could be made at this table. The "close" button simply return user to the canvas without committing the changes. The "redraw" button returns user to the canvas and redraws the current shape therein using the newly entered dimension values. 
+
 
 The aggregate displays are read-only for displaying the calculated the area, perimeter and volume information derived from the values contained within the dimensions table.
 
