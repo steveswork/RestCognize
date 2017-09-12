@@ -34,12 +34,12 @@ var appEngine = function( $ ){
 		},
 		sizeQueriesHtml = {
 			box: function( dimensions ){
-				return "<div><div>Length:</div><div><input name='length' type='number' value='" + dimensions.length + "'/></div></div><div><div>Width:</div><div><input name='width' value='" + dimensions.width + "' type='number'/></div></div><div><div>Height:</div><div><input name='height' value='" + dimensions.height + "' type='number'/></div></div>";
+				return "<div><div>Bisect Length:</div><div><input name='length' type='number' value='" + dimensions.length + "'/></div></div><div><div>Width:</div><div><input name='width' value='" + dimensions.width + "' type='number'/></div></div><div><div>Height:</div><div><input name='height' value='" + dimensions.height + "' type='number'/></div></div>";
 			},
 			circle: function( dimensions ){},
 			pentagon: function( dimensions ){},
 			empty: {
-				box: "<div><div>Length:</div><div><input name='length' type='number'/></div></div><div><div>Width:</div><div><input name='width' type='number'/></div></div><div><div>Height:</div><div><input name='height' type='number'/></div></div>",
+				box: "<div><div>Bisect Length:</div><div><input name='length' type='number'/></div></div><div><div>Width:</div><div><input name='width' type='number'/></div></div><div><div>Height:</div><div><input name='height' type='number'/></div></div>",
 				circle: '',
 				pentagon: ''
 			}
