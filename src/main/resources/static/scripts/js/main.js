@@ -1,20 +1,27 @@
+/**
+ * Author: Isienyi, Amachi Stephen
+ * Date: September 12, 2017 - 3:49 PM EST
+ * Desc: jQuery based app events handler
+ */
 var appEngine = function( $ ){
 	var url = location.protocol + '//' + location.hostname + ( location.port ? ':' + location.port: '' ), 
 		$outputDiv = $( "#output" ),
-		$shapeDivParent = $( ":first", $outputDiv ),
-		$shapeDiv = $( ":first", $shapeDivParent ),
-		$shapeDivBisect = $( $shapeDiv ).next(),
-		shapeDivHeightToBisectRatio = $shapeDiv.height() / $shapeDivBisect.height(),
+		$canvas = $outputDiv.children().first(),
+		canvasHeight = $canvas.height(),
+		canvasWidth = $canvas.width(),
+		$shapeDiv = $canvas.children().first(),
+		$shapeDivBisect = $shapeDiv.next(),
+		shapeDivHeightToBisectRatio = $shapeDivBisect.height() / $shapeDiv.height(),
 		$showSizeQueryButton = $( "button", $outputDiv ),
 		$dimensionsDiv = $outputDiv.next(),
 		$select = $( "select" ),
 		$shapeTypeRadiosContainer = $( "[name=shapetype]" ).parent(),
-		scaleFactor = $( "option:selected", $select ).val(),
+		scaleFactor = parseInt( $( "option:selected", $select ).val() ),
 		$areaInput = $( '#area', $outputDiv ),
         $perimeterInput = $( '#perimeter', $outputDiv ),
-        $volumeInput = $( '#volume', $outputDiv );
+        $volumeInput = $( '#volume', $outputDiv ),
 		getChildDimPct = function( parentDim, childDim ){
-			return ( childDim >= parentDim ? 1 : childDim/parentDim ) * 100;
+			return ( childDim >= parentDim ? parentDim * 0.75 : childDim / parentDim ) * 100;
 		},
 		startingPos = function( elDimPct, containerDimPct  ){
 			containerDimPct = containerDimPct || 100;
@@ -45,19 +52,22 @@ var appEngine = function( $ ){
 		shapeArtist = {
 			draw: {
 				box: function( dimensions ){
-					var contianerHeight = $shapeDivParent.height(),
-						contianerWidth = $shapeDivParent.width(),
-						bisectWidthPct = getChildDimPct( contianerWidth, dimensions.length ),
-						bisectHeightPct = ((( shapeDivHeightToBisectRatio * dimensions.height ) / contianerHeight ) * 100 );
+					var shown = {
+							height: dimensions.height > canvasHeight ? canvasHeight : dimensions.height,
+							length: dimensions.length > canvasWidth ? canvasWidth : dimensions.length,
+							width: dimensions.width > canvasWidth ? canvasWidth : dimensions.width
+						},
+						bisectWidthPct = getChildDimPct( canvasWidth, shown.length ),
+						bisectHeightPct = ((( shapeDivHeightToBisectRatio * shown.height ) / canvasHeight ) * 100 );
 					$shapeDiv.css({ 
 							borderRadus: "0px",
-							height: getChildDimPct( contianerHeight, dimensions.height ) + "%",
-							width: getChildDimPct( contianerWidth, dimensions.width ) + "%"
+							height: getChildDimPct( canvasHeight, shown.height ) + "%",
+							width: getChildDimPct( canvasWidth, shown.width ) + "%"
 						});
 					$shapeDivBisect.css({
 							height: bisectHeightPct + "%",
 							left: startingPos( bisectWidthPct ) + "%",
-							top: startingPos( bisectHeightPct ) + "%",
+							top: startingPos( bisectHeightPct, 80 ) + "%",
 							width: bisectWidthPct + "%",
 						});
 				},
@@ -66,7 +76,9 @@ var appEngine = function( $ ){
 			}
 		},
 		buildApiRequest = function(){
-			scaleFactor = $( "option:selected", $select ).val() - scaleFactor;
+			var _scaleFactor = parseInt( $( "option:selected", $select ).val() ),
+				_multiplier = _scaleFactor - scaleFactor;
+			scaleFactor =  _scaleFactor; 
 			return url + '/rest'
 					   + '/' + $( ":checked", $shapeTypeRadiosContainer ).val() 
 					   + '/' + ( $( "input", $dimensionsDiv ).map( 
@@ -75,7 +87,7 @@ var appEngine = function( $ ){
 												})
 											.get()
 											.join( "/" ))
-						+ '/' + ( scaleFactor < 0 ? scaleFactor : scaleFactor + 1 );
+						+ '/' + ( _multiplier < 0 ? _multiplier - 1 : _multiplier + 1 );
 		};
 	
 	$( function(){

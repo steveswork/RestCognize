@@ -29,7 +29,7 @@ body > div#options > div > div{
 	background-color: #888888;
 	z-index: 1000;	
 }
-#output > div:first-child{
+#canvas{
 	display: box;
 	display: -moz-box;
 	display: -ms-flexbox;
@@ -44,15 +44,15 @@ body > div#options > div > div{
 	-webkitbox-pack: center;
 	height: 95%;
 }
-#output > div:first-child > div{
+#canvas > div{
 	background-color: #880000;
 	margin: 0 auto;
 }
-#output > div:first-child > .loading{
+#canvas > .loading{
 	background-color: transparent;
 	color: #888888;
 	display: none;
-	font-size: 120%;
+	font-size: 400%;
 	font-weight: bold;
 	height: 100%;
 	position: absolute;
@@ -65,12 +65,12 @@ body > div#options > div > div{
 	width: 100%;
 	z-index: 999999;
 }
-#output > div:first-child > div:first-child{
+#canvas > div:first-child{
 	height: 50%;
     width: 25%;
     z-index: 1001;
 }
-#output > div:first-child > div:last-child{
+#canvas > div:nth-child(2){
 	position: absolute;
     top: calc(( 80% - 0.5% ) / 2 );
     left: calc(( 100% - 30% ) / 2 );
@@ -78,7 +78,13 @@ body > div#options > div > div{
     width: 30%;
     z-index: 1002;
 }
-#output > div:last-child > div > div > div {
+#aggregates{
+	background-color: #6495ED;
+	display: flex;
+	diplay: -webkit-flex;
+	height: 5%;
+}
+#aggregates > div > div > div {
     display: box;
     display: -moz-box;
     display: -ms-box;
@@ -89,43 +95,37 @@ body > div#options > div > div{
     -webkit-box-align: center;
     height: 100%;
 }
-#output > div:last-child{
-	background-color: #6495ED;
-	display: flex;
-	diplay: -webkit-flex;
-	height: 5%;
-}
-#output > div:last-child > div:first-child{
+#aggregates > div:first-child{
 	width: 90%; 
 	display:flex;
 	display: -webkit-flex;
 }
-#output > div:last-child > div:first-child > div{
+#aggregates > div:first-child > div{
 	display:flex;
 	display: -webkit-flex;
     padding-left: 1%;
     width: calc( 90% / 3 );
 }
-#output > div:last-child > div:first-child > div > div:first-child{
+#aggregates > div:first-child > div > div:first-child{
 	width: 20%;
 }
-#output > div:last-child > div:first-child > div > div:last-child {
+#aggregates > div:first-child > div > div:last-child {
 	width: 80%;
 }
-#output > div:last-child > div:first-child > div > div:last-child > input {
+#aggregates > div:first-child > div > div:last-child > input {
 	font-size: 70%;
     font-weight: bold;
     padding: 2% 5%;
     text-align: right;
     width: 90%;
 }
-#output > div:last-child > div:last-child{
+#aggregates > div:last-child{
     height: 100%;
 	padding-right: 0.04%;
     padding-top: 0.03%;
     width: 10%;
 }
-#output > div:last-child > div:last-child > button{
+#aggregates > div:last-child > button{
     cursor: pointer;
     font-weight: bold;
     height: 100%;

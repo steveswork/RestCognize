@@ -1,7 +1,6 @@
 package com.rest.cognizant.services;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,9 +30,9 @@ public class ScaleBoxServiceTest {
 		Mockito.verifyZeroInteractions( incScaler );	
 	}
 	
-	@Ignore( "test message erroneously denies interaction with this mock - source of discrepancy to be determined" )
 	@Test
 	public void invokeIncScalerForPositiveScaleFactor(){
+		scaleBoxService.scale( box, 1 );
 		Mockito.verify( incScaler, Mockito.times( 1 )).scale( box, 1 );
 	}
 	
@@ -43,9 +42,9 @@ public class ScaleBoxServiceTest {
 		Mockito.verifyZeroInteractions( decScaler );	
 	}
 	
-	@Ignore( "test message erroneously denies interaction with this mock - source of discrepancy to be determined" )
 	@Test
 	public void invokeDecScalerForNegativeScaleFactor(){
+		scaleBoxService.scale( box, -1 );
 		Mockito.verify( decScaler, Mockito.times( 1 )).scale( box, -1 );
 	}
 	
