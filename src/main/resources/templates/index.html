@@ -1,0 +1,88 @@
+<html>
+	<head>
+		<title>RestCognizant</title>
+		<link rel="stylesheet" type="text/css" href="styles/css/main.css" />
+	</head>
+	<body>
+		<div id="result">
+			<div id="output">
+				<div>
+					<div/>
+					<div/>
+					<div class='loading'>Loading...</div>
+				</div>
+				<div>
+					<div>
+						<div>
+							<div>Area:</div>
+							<div><input id='area' readonly="readonly"/></div>
+						</div>
+						<div>
+							<div>Perimeter:</div>
+							<div><input id='perimeter' readonly="readonly"/></div>
+						</div>
+						<div>
+							<div>Volume:</div>
+							<div><input id='volume' readonly="readonly"/></div>
+						</div>
+					</div>
+					<div>
+						<button>change size</button>
+					</div>
+				</div>
+			</div>
+			<div id="dimensions">
+				<div>
+					<div>
+						<div>Bisect length:</div>
+						<div><input type="number" name="length"/></div>
+					</div>
+					<div>
+						<div>Width:</div>
+						<div><input type="number" name="width"/></div>
+					</div>
+					<div>
+						<div>Height:</div>
+						<div><input type="number" name="height"/></div>
+					</div>
+					<div>
+						<div>
+							<button class="closeBtn">close</button>
+						</div>
+						<div>
+							<button class="redrawBtn">redraw</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<div id="options">
+			<div>
+				<div>Draw a:</div>
+				<div> 
+			  		<input type="radio" name="shapetype" value="box" checked="checked" /> Box<br />
+  			  		<input type="radio" name="shapetype" value="circle" disabled="disabled" /> Circle<br />
+  			  		<input type="radio" name="shapetype" value="pentagon" disabled="disabled" /> Pentagon
+  				</div>
+			</div>
+			<div>
+				<div>Pick a size</div>
+				<div>
+					<select>
+						<option value='1'>XXS</option>
+						<option value='2'>XS</option>
+						<option value='3'>S</option>
+						<option value='4'>M</option>
+						<option value='5' selected="selected">L</option>
+						<option value='6'>XL</option>
+						<option value='7'>XXL</option>
+						<option value='8'>XXXL</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous" />
+	<script src="scripts/js/main.js" type="text/javascript" />
+	<script type="text/javascript">appEngine( jQuery );</script>
+</html>

@@ -1,0 +1,164 @@
+body{
+	font-size: 2vmin;
+    height: 100vh;
+    margin: 0;
+    width: 100vw;
+}
+body > div{
+	overflow-y: hidden;
+	width: 100%;
+}
+body > div#result{
+	height: 85%;
+}
+body > div#options{
+	border-top: 1px solid #6495ED;
+	height: 14.9%;
+}
+body > div#options,
+body > div#options > div{
+	display: flex;
+	display: -webkit-flex;
+}
+body > div#options > div,
+body > div#options > div > div{
+	padding: 1%;	
+	width: 50%;
+}
+#output{	
+	background-color: #888888;
+	z-index: 1000;	
+}
+#output > div:first-child{
+	display: box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-box;
+	box-align: center;
+	-moz-box-align: center;
+	-ms-flex-align: center;
+	-webkit-box-align: center;
+	box-pack: center;
+	-moz-box-pack: center;
+	-ms-box-pack: center;
+	-webkitbox-pack: center;
+	height: 95%;
+}
+#output > div:first-child > div{
+	background-color: #880000;
+	margin: 0 auto;
+}
+#output > div:first-child > .loading{
+	background-color: transparent;
+	color: #888888;
+	display: none;
+	font-size: 120%;
+	font-weight: bold;
+	height: 100%;
+	position: absolute;
+	text-align: center;
+	vertical-align: middle;
+	top: calc(( 80% - % ) / 2 );
+    left: calc(( 100% - 5% ) / 2 );
+    height: 5%;
+    width: 5%;
+	width: 100%;
+	z-index: 999999;
+}
+#output > div:first-child > div:first-child{
+	height: 50%;
+    width: 25%;
+    z-index: 1001;
+}
+#output > div:first-child > div:last-child{
+	position: absolute;
+    top: calc(( 80% - 0.5% ) / 2 );
+    left: calc(( 100% - 30% ) / 2 );
+    height: 0.5%;
+    width: 30%;
+    z-index: 1002;
+}
+#output > div:last-child > div > div > div {
+    display: box;
+    display: -moz-box;
+    display: -ms-box;
+    display: -webkit-box;
+    box-align: center;
+    -moz-box-align: center;
+    -ms-box-align: center;
+    -webkit-box-align: center;
+    height: 100%;
+}
+#output > div:last-child{
+	background-color: #6495ED;
+	display: flex;
+	diplay: -webkit-flex;
+	height: 5%;
+}
+#output > div:last-child > div:first-child{
+	width: 90%; 
+	display:flex;
+	display: -webkit-flex;
+}
+#output > div:last-child > div:first-child > div{
+	display:flex;
+	display: -webkit-flex;
+    padding-left: 1%;
+    width: calc( 90% / 3 );
+}
+#output > div:last-child > div:first-child > div > div:first-child{
+	width: 20%;
+}
+#output > div:last-child > div:first-child > div > div:last-child {
+	width: 80%;
+}
+#output > div:last-child > div:first-child > div > div:last-child > input {
+	font-size: 70%;
+    font-weight: bold;
+    padding: 2% 5%;
+    text-align: right;
+    width: 90%;
+}
+#output > div:last-child > div:last-child{
+    height: 100%;
+	padding-right: 0.04%;
+    padding-top: 0.03%;
+    width: 10%;
+}
+#output > div:last-child > div:last-child > button{
+    cursor: pointer;
+    font-weight: bold;
+    height: 100%;
+    text-transform: capitalize;    
+    width: 100%;
+}
+#dimensions{
+	display: none;
+	height: 99%;
+	z-index: 1010;		
+}
+#dimensions input[type=number]{
+	text-align: right;
+}
+#dimensions > div{
+    width: 20%;
+    display: inline-block;
+    height: 13.5%;
+    position: absolute;
+    left: calc(( 100% - 20% ) / 2 );
+    top: calc(( 80% - 13.5% ) / 2 );
+}
+#dimensions > div > div{ 
+	display: flex;
+	display: -webkit-flex;	
+	margin-bottom: 0.5%
+}
+#dimensions > div > div > :first-child{
+	width: 30%;
+}
+#dimensions > div > div > :last-child{
+	width: 70%;
+}
+#dimensions > div > div > :last-child > input{
+	width: 100%;
+}
