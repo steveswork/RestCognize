@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rest.cognizant.beans.Box;
+import com.rest.cognizant.beans.Sphere;
 import com.rest.cognizant.services.ScaleShapeService;
 import com.rest.cognizant.services.ShapeService;
 
@@ -15,25 +16,46 @@ import com.rest.cognizant.services.ShapeService;
 public class RIndex {
 	
 	@RequestMapping( "/box/{length}/{width}/{hieght}" )
-	public Box getShape( @PathVariable( value = "length" ) double length,
+	public Box getBox( @PathVariable( value = "length" ) double length,
 						 @PathVariable( value = "width" ) double width,
 						 @PathVariable( value = "hieght" ) double height ){
 		return boxService.get( length, width, height );
 	} 
 
 	@RequestMapping( "/box/{length}/{width}/{hieght}/{scalefactor}" )
-	public Box getShape( @PathVariable( value = "length" ) double length,
+	public Box getBox( @PathVariable( value = "length" ) double length,
 						 @PathVariable( value = "width" ) double width,
 						 @PathVariable( value = "hieght" ) double height,
 						 @PathVariable( value = "scalefactor" ) double scaleFactor ){
 		return scaleBoxService.scale( boxService.get( length, width, height ), scaleFactor );
 	}
 	
+	@RequestMapping( "/sphere/{length}/{radius}" )
+	public Sphere getSphere( @PathVariable( value = "length" ) double length,
+						 	 @PathVariable( value = "radius" ) double radius ){
+		return sphereService.get( radius, length  );
+	} 
+
+	@RequestMapping( "/sphere/{length}/{radius}/{scalefactor}" )
+	public Sphere getSphere( @PathVariable( value = "length" ) double length,
+							 @PathVariable( value = "radius" ) double radius,
+							 @PathVariable( value = "scalefactor" ) double scaleFactor ){
+		return scaleSphereService.scale( sphereService.get( radius, length  ), scaleFactor );
+	}
+	
 	@Autowired
 	@Qualifier( "scaleBoxService" )
-	public ScaleShapeService scaleBoxService;
+	private ScaleShapeService scaleBoxService;
+	
+	@Autowired
+	@Qualifier( "scaleSphereService" )
+	private ScaleShapeService scaleSphereService;
 	
 	@Autowired
 	@Qualifier( "getBoxService" )
-	public ShapeService boxService;
+	private ShapeService boxService;
+	
+	@Autowired
+	@Qualifier( "getSphereService" )
+	private ShapeService sphereService;
 }

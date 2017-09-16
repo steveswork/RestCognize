@@ -21,7 +21,7 @@ var appEngine = function( $ ){
         $perimeterInput = $( '#perimeter', $outputDiv ),
         $volumeInput = $( '#volume', $outputDiv ),
 		getChildDimPct = function( parentDim, childDim ){
-			return ( childDim >= parentDim ? parentDim * 0.75 : childDim / parentDim ) * 100;
+			return (( childDim >= parentDim ? parentDim : childDim ) / parentDim ) * 100;
 		},
 		startingPos = function( elDimPct, containerDimPct  ){
 			containerDimPct = containerDimPct || 100;
@@ -36,12 +36,14 @@ var appEngine = function( $ ){
 			box: function( dimensions ){
 				return "<div><div>Bisect Length:</div><div><input name='length' type='number' value='" + dimensions.length + "'/></div></div><div><div>Width:</div><div><input name='width' value='" + dimensions.width + "' type='number'/></div></div><div><div>Height:</div><div><input name='height' value='" + dimensions.height + "' type='number'/></div></div>";
 			},
-			circle: function( dimensions ){},
+			sphere: function( dimensions ){
+				return "<div><div>Bisect Length:</div><div><input name='length' type='number' value='" + dimensions.length + "'/></div></div><div><div>Radius:</div><div><input name='radius' value='" + dimensions.radius + "' type='number'/></div></div>";
+			},
 			pentagon: function( dimensions ){},
 			empty: {
 				box: "<div><div>Bisect Length:</div><div><input name='length' type='number'/></div></div><div><div>Width:</div><div><input name='width' type='number'/></div></div><div><div>Height:</div><div><input name='height' type='number'/></div></div>",
-				circle: '',
-				pentagon: ''
+				sphere: "<div><div>Bisect Length:</div><div><input name='length' type='number'/></div></div><div><div>Radius:</div><div><input name='radius' type='number'/></div></div>",
+				pentagon: ""
 			}
 		},
 		setMetrics = function( area, perimeter, volume ){			
@@ -49,30 +51,46 @@ var appEngine = function( $ ){
 			$perimeterInput.val( perimeter.toFixed() );
 			$volumeInput.val( volume.toFixed() );
 		},
+		adjustShapeDivBisect = function( bisectHeightPct, bisectWidthPct ){
+			$shapeDivBisect.css({
+				height: bisectHeightPct + "%",
+				left: startingPos( bisectWidthPct ) + "%",
+				top: startingPos( bisectHeightPct, 80 ) + "%",
+				width: bisectWidthPct + "%",
+			});
+		},
+		redrawShape = function( shapeDivClassName, shown ){
+			shapeDivClassName = shapeDivClassName || 'box';
+			shown = shown || { height: 0, length: 0, width: 0 };
+			$shapeDiv.removeClass().addClass( shapeDivClassName ).css({ 
+				height: getChildDimPct( canvasHeight, shown.height ) + "%",
+				width: getChildDimPct( canvasWidth, shown.width ) + "%"
+			});
+			adjustShapeDivBisect(((( shapeDivHeightToBisectRatio * shown.height ) / canvasHeight ) * 100 ), 
+					  			  getChildDimPct( canvasWidth, shown.length ));
+		},
 		shapeArtist = {
 			draw: {
 				box: function( dimensions ){
-					var shown = {
+					redrawShape( 'box', {
 							height: dimensions.height > canvasHeight ? canvasHeight : dimensions.height,
 							length: dimensions.length > canvasWidth ? canvasWidth : dimensions.length,
 							width: dimensions.width > canvasWidth ? canvasWidth : dimensions.width
-						},
-						bisectWidthPct = getChildDimPct( canvasWidth, shown.length ),
-						bisectHeightPct = ((( shapeDivHeightToBisectRatio * shown.height ) / canvasHeight ) * 100 );
-					$shapeDiv.css({ 
-							borderRadus: "0px",
-							height: getChildDimPct( canvasHeight, shown.height ) + "%",
-							width: getChildDimPct( canvasWidth, shown.width ) + "%"
-						});
-					$shapeDivBisect.css({
-							height: bisectHeightPct + "%",
-							left: startingPos( bisectWidthPct ) + "%",
-							top: startingPos( bisectHeightPct, 80 ) + "%",
-							width: bisectWidthPct + "%",
 						});
 				},
-				circle: function(){},
-				pentagon: function(){}
+				sphere: function( dimensions ){
+					var _width = dimensions.radius * 2;
+					_width = _width > canvasWidth ? canvasWidth : _width;
+					_width = _width > canvasHeight ? canvasHeight : _width;
+					redrawShape( 'sphere', {
+							height: _width, 
+							width: _width,
+							length: dimensions.length > canvasWidth ? canvasWidth : dimensions.length
+						});
+				},
+				pentagon: function( dimensions ){
+					redrawShape( 'pentagon', dimensions );
+				}
 			}
 		},
 		buildApiRequest = function(){
@@ -87,7 +105,7 @@ var appEngine = function( $ ){
 												})
 											.get()
 											.join( "/" ))
-						+ '/' + ( _multiplier < 0 ? _multiplier - 1 : _multiplier + 1 );
+					   + '/' + ( _multiplier < 0 ? _multiplier - 1 : _multiplier + 1 );
 		};
 	
 	$( function(){
@@ -107,7 +125,8 @@ var appEngine = function( $ ){
 	$( "input", $shapeTypeRadiosContainer ).on( "change", function( e ){
 		var $this = $( this );
 		if( $this.is( ":checked" )){
-			displaySizeQuery( sizeQueriesHtml.empty[ $this.val() ]);
+			updateSizeQuery( sizeQueriesHtml.empty[ $this.val() ]);
+			$showSizeQueryButton.trigger( "click" );
 		}
 	});
 	$select.on( "change", function( e ){

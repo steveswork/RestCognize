@@ -14,8 +14,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.rest.cognizant.beans.Box;
+import com.rest.cognizant.beans.Sphere;
 import com.rest.cognizant.services.scaleshapeservice.ScaleBoxService;
+import com.rest.cognizant.services.scaleshapeservice.ScaleSphereService;
 import com.rest.cognizant.services.shapeservice.BoxService;
+import com.rest.cognizant.services.shapeservice.SphereService;
 
 @RunWith( SpringRunner.class )
 @WebMvcTest( RIndex.class)
@@ -32,14 +35,31 @@ public class RIndexTest {
 	      .contentType( MediaType.APPLICATION_JSON ))
 	      .andExpect( MockMvcResultMatchers.status().isOk() );
 	}
+	 
+	@Test
+	public void requestASphere() throws Exception {
+	    
+		Sphere testSphere = new Sphere( 8, 8 );
+		Mockito.when( sphereService.get( 8, 8 )).thenReturn( testSphere );
+		Mockito.when( scaleSphereService.scale( testSphere, 0 )).thenReturn( new Sphere() );
+		
+		mvc.perform( MockMvcRequestBuilders.get( "/rest/sphere/8/8/0" )
+	      .contentType( MediaType.APPLICATION_JSON ))
+	      .andExpect( MockMvcResultMatchers.status().isOk() );
+	}
 	
     @Autowired
     private MockMvc mvc;
     
     @MockBean
-	public ScaleBoxService scaleBoxService;
+    private ScaleBoxService scaleBoxService;
+	
+	@MockBean
+	private ScaleSphereService scaleSphereService;
 	
     @MockBean
-	public BoxService boxService;
-
+    private BoxService boxService;
+	
+	@MockBean
+	private SphereService sphereService;
 }

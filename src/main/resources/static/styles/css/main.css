@@ -70,6 +70,8 @@ body > div#options > div > div{
     width: 25%;
     z-index: 1001;
 }
+#canvas > div:first-child.box{		border-radius: 0%;		}
+#canvas > div:first-child.sphere{		border-radius: 100%;		}
 #canvas > div:nth-child(2){
 	position: absolute;
     top: calc(( 80% - 0.5% ) / 2 );

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.rest.cognizant.beans.Box;
 import com.rest.cognizant.beans.Data;
 import com.rest.cognizant.beans.Shapes;
+import com.rest.cognizant.beans.Sphere;
 
 @Component
 public interface Scaler{
@@ -36,5 +37,15 @@ public interface Scaler{
 	 */
 	public default Box scale( Box box, double scaleFactor){
 		return new Box();
+	}
+	
+	/**
+	 * scales all affected fields of type Box by a factor
+	 * @param sphere
+	 * @param scaleFactor
+	 * @return
+	 */
+	public default Sphere scale( Sphere sphere, double scaleFactor){
+		return new Sphere();
 	}
 }
