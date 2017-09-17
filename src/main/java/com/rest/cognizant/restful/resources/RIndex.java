@@ -15,18 +15,18 @@ import com.rest.cognizant.services.ShapeService;
 @RequestMapping( "/rest" )
 public class RIndex {
 	
-	@RequestMapping( "/box/{length}/{width}/{hieght}" )
+	@RequestMapping( "/box/{length}/{width}/{height}" )
 	public Box getBox( @PathVariable( value = "length" ) double length,
-						 @PathVariable( value = "width" ) double width,
-						 @PathVariable( value = "hieght" ) double height ){
+					   @PathVariable( value = "width" ) double width,
+					   @PathVariable( value = "height" ) double height ){
 		return boxService.get( length, width, height );
 	} 
 
-	@RequestMapping( "/box/{length}/{width}/{hieght}/{scalefactor}" )
+	@RequestMapping( "/box/{length}/{width}/{height}/{scalefactor}" )
 	public Box getBox( @PathVariable( value = "length" ) double length,
-						 @PathVariable( value = "width" ) double width,
-						 @PathVariable( value = "hieght" ) double height,
-						 @PathVariable( value = "scalefactor" ) double scaleFactor ){
+					   @PathVariable( value = "width" ) double width,
+					   @PathVariable( value = "height" ) double height,
+					   @PathVariable( value = "scalefactor" ) double scaleFactor ){
 		return scaleBoxService.scale( boxService.get( length, width, height ), scaleFactor );
 	}
 	
