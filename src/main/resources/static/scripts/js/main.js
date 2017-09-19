@@ -5,6 +5,7 @@
  */
 var appEngine = function( $ ){
 	var url = location.protocol + '//' + location.hostname + ( location.port ? ':' + location.port: '' ), 
+		xhr = null,
 		$outputDiv = $( "#output" ),
 		$canvas = $outputDiv.children().first(),
 		canvasHeight = $canvas.height(),
@@ -16,10 +17,20 @@ var appEngine = function( $ ){
 		$dimensionsDiv = $outputDiv.next(),
 		$select = $( "select" ),
 		$shapeTypeRadiosContainer = $( "[name=shapetype]" ).parent(),
-		scaleFactor = parseInt( $( "option:selected", $select ).val() ),
 		$areaInput = $( '#area', $outputDiv ),
         $perimeterInput = $( '#perimeter', $outputDiv ),
         $volumeInput = $( '#volume', $outputDiv ),
+        persistedState = {
+			active: {
+				shape: $( ":checked", $shapeTypeRadiosContainer ).val(),
+				dim: { 	//dimensions of previously used shapes
+					box: {},
+					sphere: {},
+					pentagon: {}
+				}
+			},
+			scaleFactor:  parseInt( $( "option:selected", $select ).val() )
+		},
 		getChildDimPct = function( parentDim, childDim ){
 			return (( childDim >= parentDim ? parentDim : childDim ) / parentDim ) * 100;
 		},
@@ -27,7 +38,15 @@ var appEngine = function( $ ){
 			containerDimPct = containerDimPct || 100;
 			return ( containerDimPct - elDimPct ) / 2;
 		},
+		formatNum = function( num, decimalPlaces ){
+			decimalPlaces = decimalPlaces || 2;
+			return parseFloat( num.toFixed( decimalPlaces )).toLocaleString();
+		},
 		updateSizeQuery = function( queryHtmlString ){
+			if( !queryHtmlString ){
+				var activeShape = persistedState.active.shape;
+				queryHtmlString = sizeQueriesHtml[ activeShape ].call( null, persistedState.active.dim[ activeShape ]);
+			}
 			var $queryDiv = $( "div:first", $dimensionsDiv );
 			$queryDiv.find( "> div:not(:last-child)" ).remove();
 			$queryDiv.prepend( queryHtmlString );
@@ -46,10 +65,16 @@ var appEngine = function( $ ){
 				pentagon: ""
 			}
 		},
-		setMetrics = function( area, perimeter, volume ){			
-			$areaInput.val( area.toFixed() );
-			$perimeterInput.val( perimeter.toFixed() );
-			$volumeInput.val( volume.toFixed() );
+		updateActiveShapeState = function( dimensions ){
+			persistedState.active.shape = $( ":checked", $shapeTypeRadiosContainer ).val();
+			var activeShape = persistedState.active.shape;
+			persistedState.active.dim[ activeShape ] = dimensions;
+		}, 
+		setMetrics = function( dimensions ){	
+			dimensions = dimensions || persistedState.active.dim[ persistedState.active.shape ];
+			$areaInput.val( formatNum( dimensions.area ));
+			$perimeterInput.val( formatNum( dimensions.perimeter ));
+			$volumeInput.val( formatNum( dimensions.volume ));
 		},
 		adjustShapeDivBisect = function( bisectHeightPct, bisectWidthPct ){
 			$shapeDivBisect.css({
@@ -95,8 +120,8 @@ var appEngine = function( $ ){
 		},
 		buildApiRequest = function(){
 			var _scaleFactor = parseInt( $( "option:selected", $select ).val() ),
-				_multiplier = _scaleFactor - scaleFactor;
-			scaleFactor =  _scaleFactor; 
+				_multiplier = _scaleFactor - persistedState.scaleFactor;
+			persistedState.scaleFactor =  _scaleFactor; 
 			return url + '/rest'
 					   + '/' + $( ":checked", $shapeTypeRadiosContainer ).val() 
 					   + '/' + ( $( "input", $dimensionsDiv ).map( 
@@ -106,45 +131,66 @@ var appEngine = function( $ ){
 											.get()
 											.join( "/" ))
 					   + '/' + ( _multiplier < 0 ? _multiplier - 1 : _multiplier + 1 );
+		},
+		updateShapeRequest = function(){
+			var shapeType = $( ":checked", $shapeTypeRadiosContainer ).val();
+			xhr = $.ajax({	
+				url: buildApiRequest()
+			}).then( function( data ){
+				updateActiveShapeState( data );
+				updateSizeQuery();
+				shapeArtist.draw[ shapeType ].call( null, data );
+				setMetrics();
+				$( '.loading', $shapeDiv ).css( "display", "none" );
+				$( ".closeBtn", $dimensionsDiv ).trigger( "click" )
+			});
 		};
 	
 	$( function(){
-		var height = $shapeDiv.height(),
-			width = $shapeDiv.width();
-		$areaInput.val(( height * width ).toFixed() );
-        $perimeterInput.val(( 2 * height + width ).toFixed() );
-        $volumeInput.val( 0 );
-		$( "input[name=length]", $dimensionsDiv ).val( $shapeDivBisect.width().toFixed() );
-		$( "input[name=height]", $dimensionsDiv ).val( $shapeDiv.height().toFixed() );
-		$( "input[name=width]", $dimensionsDiv ).val( $shapeDiv.width().toFixed() );
+		var h = $shapeDiv.height(),
+			l = $shapeDivBisect.width(),
+			w = $shapeDiv.width(),
+			a = l * w,
+			p = 2 * ( l + w );
+			v = h * l * w;
+		updateActiveShapeState({ area: a, height: h, length: l, perimeter: p, volume: v, width: w });
+		updateSizeQuery();
+		setMetrics();
 	});
 	$showSizeQueryButton.on( "click", function( e ){
 		$outputDiv.hide( "fast", "swing" );
 		$dimensionsDiv.show( "fast", "swing" );
 	});
 	$( "input", $shapeTypeRadiosContainer ).on( "change", function( e ){
-		var $this = $( this );
+		var $this = $( this ),
+			shape = $this.val();
 		if( $this.is( ":checked" )){
-			updateSizeQuery( sizeQueriesHtml.empty[ $this.val() ]);
-			$showSizeQueryButton.trigger( "click" );
+			persistedState.active.shape = shape;
+			if( $.isEmptyObject( persistedState.active.dim[ shape ])){
+				updateSizeQuery( sizeQueriesHtml.empty[ $this.val() ]);
+				$showSizeQueryButton.trigger( "click" );
+				return;
+			}
+			var dimensions = persistedState.active.dim[ shape ];
+			updateSizeQuery( sizeQueriesHtml[ shape ].call( null, dimensions ));
+			shapeArtist.draw[ shape ].call( null, dimensions );
+			setMetrics( dimensions );
 		}
 	});
 	$select.on( "change", function( e ){
-		var shapeType = $( ":checked", $shapeTypeRadiosContainer ).val();
-		$.ajax({	
-			url: buildApiRequest()
-		}).then( function( data ){
-			updateSizeQuery( sizeQueriesHtml[ shapeType.toLowerCase() ].call( null, data ));
-			shapeArtist.draw[ shapeType ].call( null, data );
-			setMetrics( data.area, data.perimeter, data.volume );
-			$( '.loading', $shapeDiv ).css( "display", "none" );
-		});
-		$( ".closeBtn", $dimensionsDiv ).trigger( "click" )
+		xhr && xhr.abort();
+		xhr = updateShapeRequest();
 		$( '.loading', $shapeDiv ).css( "display", "block" );
 	});
 	$( ".closeBtn", $dimensionsDiv ).on( "click", function( e ){
 		$dimensionsDiv.hide( "fast", "swing" );
 		$outputDiv.show( "fast", "swing" );
+		var activeShape = persistedState.active.shape;
+		if( $( ':checked', $shapeTypeRadiosContainer ).val() !== activeShape ){
+			$( ':checked', $shapeTypeRadiosContainer ).prop( 'checked', false );
+			$( '[value=' + activeShape + ']', $shapeTypeRadiosContainer ).prop( 'checked', true );
+			updateSizeQuery();
+		}
 	});
 	$( ".redrawBtn", $dimensionsDiv ).on( "click", function( e ){
 		$select.trigger( "change" );
